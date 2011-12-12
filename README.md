@@ -1,4 +1,5 @@
-=== Instapaper Liked Article Posts ===
+Instapaper Liked Article Posts
+==============================
 
 Contributors: jeremyfelt
 Donate link: http://www.jeremyfelt.com/wordpress/plugins/instapaper-liked-article-posts/
@@ -9,8 +10,8 @@ Stable tag: 0.2
 
 Checks your Instapaper 'Liked' article RSS feed and creates new posts with that data. Another step towards owning your data.
 
-== Description ==
-
+Description
+----------------
 Instapaper Liked Article Posts checks your Instapaper 'Liked' article RSS feed on a regular basis and creates new posts with that data under a new custom post type (or any other post type you choose). Another step in owning your data.
 
 By using this plugin, you can automatically share articles that you find interesting with readers of your blog or archive them for your own purposes. The reason I built this plugin is specifically for data ownership. I wanted a place to store the data I was creating through the awesome Instapaper service.
@@ -28,36 +29,23 @@ Settings are available for:
 * RSS Fetch Frequency
     * By default we check for new items every hour. This can currently be set to daily or twice daily as well.
     
-== Installation ==
-
+Installation 
+------------------
 1. Upload 'instapaper-liked-article-posts.php' to your plugin directory, usually 'wp-content/plugins/', or install automatically via your WordPress admin page.
 1. Activate Instapaper Liked Article Posts in your plugin menu.
 1. Configure using the Instapaper Posts menu under Settings in your admin page. (*See Screenshot*)
 
 That's it! The only option you absolutely need to configure in step 3 is the RSS feed URL of your Instapaper Liked items. Everything else is taken care of for you.
 
-== Frequently Asked Questions ==
+Frequently Asked Questions
+----------------------------
 
 = Why aren't there any FAQs? =
 
 *  Because nobody has asked a question yet.
 
-== Screenshots ==
+Screenshots
+--------------
 
 1. What the new Instapaper custom post type will look like.
 1. The settings screen for Instapaper Liked Article Posts
-
-== Changelog ==
-= 0.2 =
-
-* All the major work.
-
-= 0.1 =
-
-* It's alive!
-
-== Upgrade Notice ==
-
-= 0.2 =
-
-* No upgrades yet. Initial install.
