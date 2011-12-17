@@ -93,16 +93,10 @@ function ilap_plugin_action_links( $links, $file ){
 
 function ilap_edit_icon(){
     global $post_type;
-    if ( $post_type == 'ilap_instapaper' ) {
+    if ( 'ilap_instapaper' == $post_type ) {
         echo '<style>#icon-edit { background: url("' . plugins_url( 'images/instapaper-48.png', __FILE__ ) . '") no-repeat;
                                   background-size: 32px 32px; }</style>';
     }
-}
-
-
-function stylize() {
-global $post_type;
-if($post_type == 'billboard') echo '<style>#icon-edit {background: url("'.plugins_url( 'billboard.png', __FILE__ ).'") no-repeat; }</style>';
 }
 
 function ilap_add_settings(){
