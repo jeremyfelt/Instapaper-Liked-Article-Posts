@@ -5,7 +5,7 @@ Donate link: http://www.jeremyfelt.com/wordpress/plugins/instapaper-liked-articl
 Tags: instapaper, custom-post-type, rss, feed, automatic, liked
 Requires at least: 3.2.1
 Tested up to: 3.3
-Stable tag: 0.2
+Stable tag: 0.3
 
 Checks your Instapaper 'Liked' article RSS feed and creates new posts with that data. Another step towards owning your data.
 
@@ -48,6 +48,10 @@ That's it! The only option you absolutely need to configure in step 3 is the RSS
 1. The settings screen for Instapaper Liked Article Posts
 
 == Changelog ==
+= 0.3 =
+
+* Due to the SimplePie default feed_fetch cache lifetime of 12 hours, regular feed checks weren't happening. Cache for this feed is not set to 30 seconds so that it *really* checks for new items.
+
 = 0.2 =
 
 * All the major work.
@@ -57,6 +61,9 @@ That's it! The only option you absolutely need to configure in step 3 is the RSS
 * It's alive!
 
 == Upgrade Notice ==
+= 0.3 =
+
+* See changelog, you'll probably like this upgrade - more regular fetches and such.
 
 = 0.2 =
 
