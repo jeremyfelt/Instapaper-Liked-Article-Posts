@@ -317,6 +317,13 @@ function ilap_create_instapaper_type(){
     );
 }
 
+function ilap_modify_feed_cache( $seconds ) {
+    /* We know we'll want the freshest version of the feed every time we check, so there's
+        no reason to set a cache higher than hourly. Set to 30 seconds just in case we
+        update the settings in order to trigger capture without causing any confusion. */
+    return 30;
+}
+
 function ilap_on_the_hour(){
     /*  Grab the configured Instapaper Liked RSS feed and create new posts based on that. */
 
@@ -328,8 +335,13 @@ function ilap_on_the_hour(){
     $post_type = $instapaper_options[ 'post_type' ];
     /*  The post status we'll use. */
     $post_status = $instapaper_options[ 'post_status' ];
+
+    /*  Add a quick filter to change the default SimplePie cache time */
+    add_filter( 'wp_feed_cache_transient_lifetime', 'ilap_modify_feed_cache' );
     /*  Now fetch with the WordPress SimplePie function. */
     $instapaper_feed = fetch_feed( $instapaper_feed_url );
+    /*  We don't want to change anybody else's feed caching, so remove the filter. */
+    remove_filter( 'wp_feed_cache_transient_lifetime', 'ilap_modify_feed_cache' );
 
     if ( ! is_wp_error( $instapaper_feed ) ){
         /*  Feed looks like a good object, continue. */
