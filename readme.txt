@@ -7,7 +7,7 @@ Requires at least: 3.2.1
 Tested up to: 3.3
 Stable tag: 0.3
 
-Checks your Instapaper 'Liked' article RSS feed and creates new posts with that data. Another step towards owning your data.
+Checks your Instapaper 'Liked' article RSS feed and creates new posts. Another step towards owning your data.
 
 == Description ==
 
