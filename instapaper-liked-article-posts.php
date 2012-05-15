@@ -72,76 +72,69 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	}
 
 	public function view_settings() {
-
-		/*  Display the main settings view for Instapaper Liked Article Posts. */
-		echo '<div class="wrap">
-        <div class="icon32" id="icon-options-general"></div>
-            <h2>' . __( 'Instapaper Liked Article Posts', 'instapaper-liked-article-posts' ) . '</h2>
-            <h3>' . __( 'Overview', 'instapaper-liked-article-posts' ) . ':</h3>
-            <p style="margin-left:12px;max-width:640px;">
-            ' . __( 'The settings below will help determine where to check for your Instapaper Liked items, how often to
-            look for them, and how they should be stored once new items are found.', 'instapaper-liked-article-posts' ) . '</p>
-            <p style="margin-left:12px;max-width:640px;">
-                The most important part of this process will be to determine the RSS feed for your Instapaper Liked items.
-            </p>
-            <ol style="margin-left:36px;">
-                <li>Visit your <a href="http://www.instapaper.com/liked">Instapaper Liked items</a> page. <em>(http://www.instapaper.com/liked)</em></li>
-                <li>Scroll to the bottom of that page.</li>
-                <li>Look for the link labeled "This folder\'s RSS" next to the orange RSS icon.
-                    <img src="' . plugins_url( '/images/rss.png', __FILE__ ) . '"></li>
-                <li>Copy this link and paste it into the "Instapaper RSS Feed" setting below these instructions.</li>
-            </ol>';
-
-		echo '<form method="post" action="options.php">';
-
+		?>
+		<div class="wrap">
+			<div class="icon32" id="icon-options-general"></div>
+			<h2><?php _e( 'Instapaper Liked Article Posts', 'instapaper-liked-article-posts' ); ?></h2>
+			<h3><?php _e( 'Overview', 'instapaper-liked-article-posts' ); ?>:</h3>
+            <p style="margin-left:12px;max-width:640px;"><?php _e( 'The settings below will help determine where to check for your Instapaper Liked items, how often to look for them, and how they should be stored once new items are found.', 'instapaper-liked-article-posts' ); ?></p>
+			<p style="margin-left: 12px; max-width: 640px;"><?php _e( 'The most important part of this process will be to determine the RSS feed for your Instapaper Liked items.', 'instapaper-liked-article-posts' ); ?></p>
+			<ol style="margin-left:36px;">
+				<li><?php _e( 'Visit your <a href="http://www.instapaper.com/liked">Instapaper Liked items</a> page. <em>(http://www.instapaper.com/liked)</em>', 'instapaper-liked-article-posts' ); ?></li>
+				<li><?php _e( 'Scroll to the bottom of that page.', 'instapaper-liked-article-posts' ); ?></li>
+				<li><?php _e( 'Look for the link labeled "This folder\'s RSS" next to the orange RSS icon.', 'instapaper-liked-article-posts' ); ?> <img src="<?php echo plugins_url( '/images/rss.png', __FILE__ ); ?>"></li>
+				<li><?php _e( 'Copy this link and paste it into the "Instapaper RSS Feed" setting below these instructions.', 'instapaper-liked-article-posts' ); ?></li>
+			</ol>
+			<form method="post" action="options.php">
+		<?php
 		settings_fields( 'ilap_options' );
-		do_settings_sections( 'ilap' ); // Display the main section of settings.
-
-		echo '<p class="submit"><input type="submit" class="button-primary" value="';
-		_e( 'Save Changes', 'instapaper-liked-article-posts' );
-		echo '" />
-            </p>
-            </form>
-        </div>';
+		do_settings_sections( 'ilap' );
+		?>
+				<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'instapaper-liked-article-posts' ); ?>" /></p>
+			</form>
+		</div>
+		<?php
 	}
 
 	public function register_settings() {
-		/*  Register the settings we want available for this. */
 		register_setting( 'ilap_options', 'ilap_options', array( $this, 'validate_options' ) );
 		add_settings_section( 'ilap_section_main', '', array( $this, 'display_main_section_text' ), 'ilap' );
 		add_settings_section( 'ilap_section_post_type', '', array( $this, 'display_post_type_section_text' ), 'ilap' );
 		add_settings_section( 'ilap_section_interval', '', array( $this, 'display_interval_section_text' ), 'ilap' );
-		add_settings_field( 'ilap_instapaper_rss_feed', 'Instapaper RSS Feed:', array( $this, 'display_rss_feed_text' ), 'ilap', 'ilap_section_main' );
-		add_settings_field( 'ilap_max_fetch_items', 'Max Items To Fetch:', array( $this, 'display_max_items_text' ), 'ilap', 'ilap_section_main' );
-		add_settings_field( 'ilap_post_type', 'Post Type:', array( $this, 'display_post_type_text' ), 'ilap', 'ilap_section_post_type' );
+		add_settings_field( 'ilap_instapaper_rss_feed', __( 'Instapaper RSS Feed:', 'instapaper-liked-article-posts' ), array( $this, 'display_rss_feed_text' ), 'ilap', 'ilap_section_main' );
+		add_settings_field( 'ilap_max_fetch_items', __( 'Max Items To Fetch:', 'instapaper-liked-article-posts' ), array( $this, 'display_max_items_text' ), 'ilap', 'ilap_section_main' );
+		add_settings_field( 'ilap_post_type', __( 'Post Type:', 'instapaper-liked-article-posts' ), array( $this, 'display_post_type_text' ), 'ilap', 'ilap_section_post_type' );
 		add_settings_field( 'ilap_post_status', __( 'Default Post Status:', 'instapaper-liked-article-posts' ) , array( $this, 'display_post_status_text' ), 'ilap', 'ilap_section_post_type' );
-		add_settings_field( 'ilap_fetch_interval', 'Feed Fetch Interval: ', array( $this, 'display_fetch_interval_text' ), 'ilap', 'ilap_section_interval' );
+		add_settings_field( 'ilap_fetch_interval', __( 'Feed Fetch Interval: ', 'instapaper-liked-article-posts' ), array( $this, 'display_fetch_interval_text' ), 'ilap', 'ilap_section_interval' );
 	}
 
 	public function display_main_section_text() {}
 
 	public function display_post_type_section_text() {
-		echo '<h3>Custom Or Default Post Type</h3>
-    <p style="margin-left:12px;max-width: 640px;">A new custom post type that adds an \'Instapaper\' slug to new items has been added and selected by default.
-    You can change this to any other available post type if you would like.</p>';
+		?>
+		<h3>Custom Or Default Post Type</h3>
+		<p style="margin-left:12px; max-width: 640px;"><?php _e( 'A new custom post type that adds an \'Instapaper\' slug to new items has been added and selected by default. You can change this to any other available post type if you would like.', 'instapaper-liked-article-posts' ); ?></p>
+		<?php
 	}
 
 	public function display_interval_seciton_text() {
-		echo '<h3>RSS Fetch Frequency</h3>
-        <p style="margin-left:12px;max-width: 630px;">This plugin currently depends on WP Cron operating fully as expected. In most cases, you should
-        be able to select one of the intervals below and things will work as expected. If not, please let <a href="http://www.jeremyfelt.com">me</a> know. By
-        default, we check for new items on an hourly basis.</p>';
-		$seconds_till_cron = wp_next_scheduled( 'ilap_hourly_action' ) - time();
-		$user_next_cron = date( 'H:i:sA', wp_next_scheduled( 'ilap_hourly_action' ) + ( get_option( 'gmt_offset' ) * 3600 ) );
-		echo '<p style="margin-left:12px;">The next check is scheduled to run at ' . $user_next_cron . ', which occurs in ' . $seconds_till_cron . ' seconds.</p>';
+		?>
+		<h3>RSS Fetch Frequency</h3>
+		<p style="margin-left:12px;max-width: 630px;"><?php _e( 'This plugin currently depends on WP Cron operating fully as expected. In most cases, you should be able to select one of the intervals below and things will work as expected. If not, please let <a href="http://www.jeremyfelt.com">me</a> know. By default, we check for new items on an hourly basis.', 'instapaper-liked-article-posts' ); ?></p>
+		<?php
+		$seconds_till_cron = wp_next_scheduled( 'ilap_process_feed' ) - time();
+		$user_next_cron = date( 'H:i:sA', wp_next_scheduled( 'ilap_process_feed' ) + ( get_option( 'gmt_offset' ) * 3600 ) );
+		?>
+		<p style="margin-left:12px;"><?php printf( __( 'The next check is scheduled to run at %1$s, which occurs in %2$s seconds', 'instapaper-liked-article-posts' ), $user_next_cron, $seconds_till_cron ); ?></p>
+		<?php
 	}
 
 	public function display_rss_feed_text() {
 		$ilap_options = get_option( 'ilap_options' );
-		echo '<input style="width: 400px;" type="text" id="ilap_instapaper_rss_feed"
-                             name="ilap_options[instapaper_rss_feed]"
-                             value="' . esc_url( $ilap_options[ 'instapaper_rss_feed' ] ) . '">';
-		echo '<br><em>http://www.instapaper.com/starred/rss/######/YYYYYYYYYYYYYY</em>';
+		?>
+		<input style="width: 400px;" type="text" id="ilap_instapaper_rss_feed" name="ilap_options[instapaper_rss_feed]" value="<?php echo esc_url( $ilap_options[ 'instapaper_rss_feed' ] ); ?>" />
+		<br><em>http://www.instapaper.com/starred/rss/######/YYYYYYYYYYYYYY</em>
+		<?php
 	}
 
 	public function display_post_type_text() {
@@ -209,10 +202,9 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 	public function display_max_items_text() {
 		$ilap_options = get_option( 'ilap_options' );
-		echo '<input type="text"
-                 id="ilap_max_fetch_items"
-                 name="ilap_options[max_fetch_items]"
-                 value="' . $ilap_options[ 'max_fetch_items' ] . '">';
+		?>
+		<input type="text" id="ilap_max_fetch_items" name="ilap_options[max_fetch_items]" value="<?php echo esc_attr( $ilap_options[ 'max_fetch_items' ] ); ?>" />
+		<?php
 	}
 
 	public function validate_options( $input ) {
@@ -291,7 +283,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 	public function process_feed() {
 		/*  Grab the configured Instapaper Liked RSS feed and create new posts based on that. */
-vip_safe_wp_remote_get()
+
 		/*  Go get some options! */
 		$instapaper_options = get_option( 'ilap_options' );
 		/*  The feed URL we'll be grabbing. */
@@ -348,8 +340,6 @@ vip_safe_wp_remote_get()
 					add_post_meta( $item_post_id, 'ilap_hash', $item_hash, true );
 				}
 			}
-		}else{
-			/*  Uhhh, feels a little shady to die silently, but for now that's all we got. */
 		}
 	}
 }
