@@ -60,7 +60,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	 *
 	 * @return array of link data
 	 */
-	public function add_action_links( $links, $file ) {
+	public function add_plugin_action_links( $links, $file ) {
 		static $this_plugin;
 
 		if ( ! $this_plugin )
