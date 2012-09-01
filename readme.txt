@@ -1,10 +1,10 @@
 === Instapaper Liked Article Posts ===
 
 Contributors: jeremyfelt
-Donate link: http://www.jeremyfelt.com/wordpress/plugins/instapaper-liked-article-posts/
-Tags: instapaper, custom-post-type, rss, feed, automatic, liked
+Donate link: http://jeremyfelt.com/wordpress/plugins/instapaper-liked-article-posts/
+Tags: instapaper, custom post type, rss, feed, automatic, liked
 Requires at least: 3.2.1
-Tested up to: 3.3
+Tested up to: 3.4.1
 Stable tag: 0.3
 
 Checks your Instapaper 'Liked' article RSS feed and creates new posts. Another step towards owning your data.
