@@ -406,11 +406,9 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 				$item_content = '<p><a href="' . esc_url_raw( $item_link ) . '">' . $item_title . '</a></p>
                 <p>' . $item_description . '</p>';
 
-				$item_content = apply_filters( 'ilap_content_filter', $item_content, $item_link, $item_title, $item_description );
-
 				$insta_post = array(
 					'post_title' => $item_title,
-					'post_content' => $item_content,
+					'post_content' => apply_filters( 'ilap_content_filter', $item_content, $item_link, $item_title, $item_description ),
 					'post_author' => 1,
 					'post_status' => $post_status,
 					'post_type' => $post_type,
