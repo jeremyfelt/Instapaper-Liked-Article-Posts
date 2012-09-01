@@ -354,17 +354,14 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		return 30;
 	}
 
+	/*  Grab the configured Instapaper Liked RSS feed and create new posts based on that. */
 	public function process_feed() {
 		global $wpdb;
-		/*  Grab the configured Instapaper Liked RSS feed and create new posts based on that. */
 
-		/*  Go get some options! */
 		$instapaper_options = get_option( 'ilap_options' );
 
 		if ( empty( $instapaper_options['instapaper_rss_feed'] ) )
 			return;
-
-		$instapaper_feed_url = $instapaper_options['instapaper_rss_feed'];
 
 		if ( empty( $instapaper_options['post_type'] ) )
 			$instapaper_options['post_type'] = 'ilap_instapaper';
@@ -406,9 +403,12 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 				$item_content = '<p><a href="' . esc_url_raw( $item_link ) . '">' . $item_title . '</a></p>
                 <p>' . $item_description . '</p>';
 
+				$item_title = apply_filters( 'ilap_title', $item_title, $item_link, $item_description );
+				$item_content = apply_filters( 'ilap_content', $item_content, $item_link, $item_title, $item_description );
+
 				$insta_post = array(
-					'post_title' => apply_filters( 'ilap_title', $item_title, $item_link, $item_description ),
-					'post_content' => apply_filters( 'ilap_content', $item_content, $item_link, $item_title, $item_description ),
+					'post_title' => sanitize_text_field( $item_title ),
+					'post_content' => wp_kses_post( $item_content ),
 					'post_author' => 1,
 					'post_status' => $post_status,
 					'post_type' => $post_type,
