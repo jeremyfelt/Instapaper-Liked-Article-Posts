@@ -34,6 +34,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	public function __construct() {
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+		add_action( 'admin_init', array( $this, 'upgrade' ) );
 		add_action( 'admin_head', array( $this, 'modify_admin_icon' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -42,11 +43,36 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		add_action( 'ilap_process_feed', array( $this, 'process_feed' ) );
 	}
 
+	public function activate() {
+	}
+
 	/**
 	 * When the plugin is deactivated, make sure to clear the scheduled hook we have set.
 	 */
 	public function deactivate() {
 		wp_clear_scheduled_hook( 'ilap_process_feed' );
+		wp_clear_scheduled_hook( 'ilap_hourly_action' );
+	}
+
+	function upgrade() {
+
+		$db_version = get_option( 'ilap_version', '0.3' );
+
+		/**
+		 * Before version 0.4, we used the hook ilap_hourly_action for our scheduled event.
+		 * This only really makes sense when an hourly event is scheduled, so instead we're
+		 * renaming it to ilap_process_feed. When doing this, we should make sure any old
+		 * settings are transferred over before clearing the old hook. We should definitely
+		 * clear the old hook to avoid DB pollution.
+		 */
+		if ( '0.3' == $db_version ) {
+			if ( $prev_time = wp_next_scheduled( 'ilap_hourly_action' ) ) {
+				$prev_interval = wp_get_schedule( 'ilap_hourly_action' );
+				wp_clear_scheduled_hook( 'ilap_hourly_action' );
+				wp_schedule_event( $prev_time, $prev_interval, 'ilap_process_feed' );
+			}
+			update_option( 'ilap_version', '0.4' );
+		}
 	}
 
 	/**
