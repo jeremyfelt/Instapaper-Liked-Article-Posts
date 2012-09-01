@@ -334,6 +334,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	}
 
 	public function process_feed() {
+		global $wpdb;
 		/*  Grab the configured Instapaper Liked RSS feed and create new posts based on that. */
 
 		/*  Go get some options! */
@@ -372,40 +373,30 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 				$item_link = $item->get_link();
 				$item_title = $item->get_title();
 				$item_description = $item->get_description();
-				$item_hash = md5( $item_description );
+
+				$unique_hash = md5( $item_title );
+
+				$existing_post_id = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id FROM $wpdb->postmeta
+					WHERE $wpdb->postmeta.meta_key = '_ilap_unique_hash' AND $wpdb->postmeta.meta_value = %s", $unique_hash ) );
+
+				if ( $existing_post_id )
+					continue;
 
 				$item_content = '<p><a href="' . esc_url_raw( $item_link ) . '">' . $item_title . '</a></p>
                 <p>' . $item_description . '</p>';
 
 				$item_content = apply_filters( 'ilap_content_filter', $item_content, $item_link, $item_title, $item_description );
 
+				$insta_post = array(
+					'post_title' => $item_title,
+					'post_content' => $item_content,
+					'post_author' => 1,
+					'post_status' => $post_status,
+					'post_type' => $post_type,
+				);
 
-				if ( get_page_by_title( $item_title, 'OBJECT', $post_type ) ){
-					/*  Title already exists. */
-					$existing_hash = get_post_meta( get_page_by_title( $item_title, 'OBJECT', $post_type )->ID, 'ilap_hash', true );
-
-					if ( $item_hash == $existing_hash ){
-						$skip = 1;
-					}else{
-						$skip = NULL;
-					}
-				}else{
-					$skip = NULL;
-				}
-
-				if ( ! $skip ){
-
-					$insta_post = array(
-						'post_title' => $item_title,
-						'post_content' => $item_content,
-						'post_author' => 1,
-						'post_status' => $post_status,
-						'post_type' => $post_type,
-					);
-
-					$item_post_id = wp_insert_post( $insta_post );
-					add_post_meta( $item_post_id, 'ilap_hash', $item_hash, true );
-				}
+				$item_post_id = wp_insert_post( $insta_post );
+				add_post_meta( $item_post_id, '_ilap_unique_hash', $unique_hash, true );
 			}
 		}
 	}
