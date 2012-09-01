@@ -368,13 +368,17 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 			$instapaper_items = $instapaper_feed->get_items( 0, $feed_item_count );
 
 			foreach( $instapaper_items as $item ) {
+
 				$item_link = $item->get_link();
 				$item_title = $item->get_title();
 				$item_description = $item->get_description();
 				$item_hash = md5( $item_description );
 
-				$item_content = '<p><a href="' . $item_link . '">' . $item_title . '</a></p>
+				$item_content = '<p><a href="' . esc_url_raw( $item_link ) . '">' . $item_title . '</a></p>
                 <p>' . $item_description . '</p>';
+
+				$item_content = apply_filters( 'ilap_content_filter', $item_content, $item_link, $item_title, $item_description );
+
 
 				if ( get_page_by_title( $item_title, 'OBJECT', $post_type ) ){
 					/*  Title already exists. */
