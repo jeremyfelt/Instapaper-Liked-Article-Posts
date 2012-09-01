@@ -315,6 +315,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 				     'custom-fields',
 				     'comments',
 				     'revisions',
+				     'post-formats',
 			     ),
 			     'has_archive' => true,
 			     'rewrite' => array(
