@@ -338,25 +338,36 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 		/*  Go get some options! */
 		$instapaper_options = get_option( 'ilap_options' );
-		/*  The feed URL we'll be grabbing. */
+
+		if ( empty( $instapaper_options['instapaper_rss_feed'] ) )
+			return;
+
 		$instapaper_feed_url = $instapaper_options['instapaper_rss_feed'];
-		/*  The post type we'll be saving as. We designed it to be custom, but why not allow anything. */
-		$post_type = $instapaper_options[ 'post_type' ];
-		/*  The post status we'll use. */
-		$post_status = $instapaper_options[ 'post_status' ];
+
+		if ( empty( $instapaper_options['post_type'] ) )
+			$instapaper_options['post_type'] = 'ilap_instapaper';
+
+		if ( empty( $instapaper_options['post_status'] ) )
+			$instapaper_options['post_status'] = 'publish';
+
+		if ( empty( $instapaper_options['max_fetch_items'] ) )
+			$instapaper_options['max_fetch_items'] = 10;
 
 		/*  Add a quick filter to change the default SimplePie cache time */
 		add_filter( 'wp_feed_cache_transient_lifetime', array( $this, 'modify_feed_cache' ) );
+
 		/*  Now fetch with the WordPress SimplePie function. */
-		$instapaper_feed = fetch_feed( $instapaper_feed_url );
+		$instapaper_feed = fetch_feed( esc_url( $instapaper_options['instapaper_rss_feed'] ) );
+
 		/*  We don't want to change anybody else's feed caching, so remove the filter. */
 		remove_filter( 'wp_feed_cache_transient_lifetime', array( $this, 'modify_feed_cache' ) );
 
-		if ( ! is_wp_error( $instapaper_feed ) ){
-			/*  Feed looks like a good object, continue. */
-			$max_items = $instapaper_feed->get_item_quantity( absint( $instapaper_options[ 'max_fetch_items' ] ) );
-			$instapaper_items = $instapaper_feed->get_items(0, $max_items);
-			foreach( $instapaper_items as $item ){
+		if ( ! is_wp_error( $instapaper_feed ) ) {
+
+			$feed_item_count = $instapaper_feed->get_item_quantity( absint( $instapaper_options['max_fetch_items'] ) );
+			$instapaper_items = $instapaper_feed->get_items( 0, $feed_item_count );
+
+			foreach( $instapaper_items as $item ) {
 				$item_link = $item->get_link();
 				$item_title = $item->get_title();
 				$item_description = $item->get_description();
