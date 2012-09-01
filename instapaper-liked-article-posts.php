@@ -405,13 +405,14 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 				$item_title = apply_filters( 'ilap_title', $item_title, $item_link, $item_description );
 				$item_content = apply_filters( 'ilap_content', $item_content, $item_link, $item_title, $item_description );
+				$item_author_id = apply_filters( 'ilap_author_id', 1 );
 
 				$insta_post = array(
 					'post_title' => sanitize_text_field( $item_title ),
 					'post_content' => wp_kses_post( $item_content ),
-					'post_author' => 1,
-					'post_status' => $post_status,
-					'post_type' => $post_type,
+					'post_author' => absint( $item_author_id ),
+					'post_status' => $instapaper_options['post_status'],
+					'post_type' => $instapaper_options['post_type'],
 				);
 
 				$item_post_id = wp_insert_post( $insta_post );
