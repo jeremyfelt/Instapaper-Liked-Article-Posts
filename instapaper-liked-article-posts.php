@@ -49,8 +49,17 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		wp_clear_scheduled_hook( 'ilap_process_feed' );
 	}
 
-	/*  Function gratefully taken (and barely modified) from Pippin Williamson's
-		WPMods article: http://www.wpmods.com/adding-plugin-action-links/ */
+	/**
+	 * Add a settings action link to the plugins page.
+	 *
+	 * Function gratefully forked from Pippin Williamson's WPMods article:
+	 * http://www.wpmods.com/adding-plugin-action-links/
+	 *
+	 * @param $links array of link data associated with the plugin row
+	 * @param $file string representing the current plugin's filename
+	 *
+	 * @return array of link data
+	 */
 	public function add_action_links( $links, $file ) {
 		static $this_plugin;
 
@@ -64,6 +73,9 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		return $links;
 	}
 
+	/**
+	 * Add an icon to the edit screen for our post type
+	 */
 	public function modify_admin_icon() {
 		global $post_type;
 
@@ -339,3 +351,4 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		}
 	}
 }
+new Instapaper_Liked_Article_Posts_Foghlaim();
