@@ -83,10 +83,16 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 			echo '<style>#icon-edit { background: url("' . plugins_url( 'images/instapaper-48.png', __FILE__ ) . '") no-repeat; background-size: 32px 32px; }</style>';
 	}
 
+	/**
+	 * Add our general settings page for the plugin
+	 */
 	public function add_settings() {
 		add_options_page( __('Instapaper Posts', 'instapaper-liked-article-posts' ), __('Instapaper Posts', 'instapaper-liked-article-posts'), 'manage_options', 'instapaper-liked-article-posts-settings', array( $this, 'view_settings' ) );
 	}
 
+	/**
+	 * The view of the settings page for the plugin
+	 */
 	public function view_settings() {
 		?>
 		<div class="wrap">
@@ -112,6 +118,9 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		<?php
 	}
 
+	/**
+	 * Register the various settings displayed in view_settings
+	 */
 	public function register_settings() {
 		register_setting( 'ilap_options', 'ilap_options', array( $this, 'validate_options' ) );
 		add_settings_section( 'ilap_section_main', '', array( $this, 'display_main_section_text' ), 'ilap' );
@@ -124,6 +133,9 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		add_settings_field( 'ilap_fetch_interval', __( 'Feed Fetch Interval: ', 'instapaper-liked-article-posts' ), array( $this, 'display_fetch_interval_text' ), 'ilap', 'ilap_section_interval' );
 	}
 
+	/**
+	 * We don't have any default section text to display, so this stays empty.
+	 */
 	public function display_main_section_text() {}
 
 	public function display_post_type_section_text() {
@@ -133,10 +145,10 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		<?php
 	}
 
-	public function display_interval_seciton_text() {
+	public function display_interval_section_text() {
 		?>
 		<h3>RSS Fetch Frequency</h3>
-		<p style="margin-left:12px;max-width: 630px;"><?php _e( 'This plugin currently depends on WP Cron operating fully as expected. In most cases, you should be able to select one of the intervals below and things will work as expected. If not, please let <a href="http://www.jeremyfelt.com">me</a> know. By default, we check for new items on an hourly basis.', 'instapaper-liked-article-posts' ); ?></p>
+		<p style="margin-left:12px;max-width: 630px;"><?php _e( 'This plugin currently depends on WP Cron operating fully as expected. In most cases, you should be able to select one of the intervals below and things will work as expected. If not, please post <a href="http://wordpress.org/support/plugin/instapaper-liked-article-posts">a question on the forum</a>. By default, we check for new items on an hourly basis.', 'instapaper-liked-article-posts' ); ?></p>
 		<?php
 		$seconds_till_cron = wp_next_scheduled( 'ilap_process_feed' ) - time();
 		$user_next_cron = date( 'H:i:sA', wp_next_scheduled( 'ilap_process_feed' ) + ( get_option( 'gmt_offset' ) * 3600 ) );
@@ -148,7 +160,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	public function display_rss_feed_text() {
 		$ilap_options = get_option( 'ilap_options' );
 		?>
-		<input style="width: 400px;" type="text" id="ilap_instapaper_rss_feed" name="ilap_options[instapaper_rss_feed]" value="<?php echo esc_url( $ilap_options[ 'instapaper_rss_feed' ] ); ?>" />
+		<input style="width: 400px;" type="text" id="ilap_instapaper_rss_feed" name="ilap_options[instapaper_rss_feed]" value="<?php if ( isset( $ilap_options['instapaper_rss_feed'] ) ) : echo esc_url( $ilap_options['instapaper_rss_feed'] ); endif; ?>" />
 		<br><em>http://www.instapaper.com/starred/rss/######/YYYYYYYYYYYYYY</em>
 		<?php
 	}
@@ -156,8 +168,8 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	public function display_post_type_text() {
 		$ilap_options = get_option( 'ilap_options', array() );
 
-		if ( empty( $ilap_options ) )
-			$ilap_options[ 'post_type' ] = $this->post_type;
+		if ( empty( $ilap_options['post_type'] ) )
+			$ilap_options['post_type'] = $this->post_type;
 
 		$all_post_types = get_post_types( array( '_builtin' => false ) );
 
@@ -166,25 +178,24 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		echo '<select id="ilap_post_type" name="ilap_options[post_type]">';
 
 		foreach( $post_types as $pt ){
-			echo '<option value="' . esc_attr( $pt ) . '" ' . selected( $ilap_options[ 'post_type' ], $pt, false ) . '" >';
+			echo '<option value="' . esc_attr( $pt ) . '" ' . selected( $ilap_options['post_type'], $pt, false ) . '" >' . esc_attr( $pt ) . '</option>';
 		}
 
 		echo '</select>';
-
 	}
 
 	public function display_post_status_text() {
 		$ilap_options = get_option( 'ilap_options', array() );
 
-		if ( empty( $ilap_options ) )
-			$ilap_options[ 'post_status' ] = $this->post_status;
+		if ( empty( $ilap_options['post_status'] ) )
+			$ilap_options['post_status'] = $this->post_status;
 
 		$post_stati = array( 'draft', 'publish', 'private' );
 
 		echo '<select id="ilap_post_status" name="ilap_options[post_status]">';
 
 		foreach( $post_stati as $ps ) {
-			echo '<option value="' . esc_attr( $ps ) . '" ' . selected( $ilap_options[ 'post_status' ], $ps, false ) . '" >';
+			echo '<option value="' . esc_attr( $ps ) . '" ' . selected( $ilap_options['post_status'], $ps, false ) . '" >' . esc_attr( $ps ) . '</option>';
 		}
 
 		echo '</select>';
@@ -195,14 +206,13 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		$intervals = array( 'hourly', 'twicedaily', 'daily' );
 		$ilap_options = get_option( 'ilap_options' );
 
+		if ( empty( $ilap_options['fetch_interval'] ) )
+			$ilap_options['fetch_interval'] = 'hourly';
+
 		echo '<select id="ilap_fetch_interval" name="ilap_options[fetch_interval]">';
 
 		foreach( $intervals as $i ){
-			echo '<option value="' . $i . '" ';
-
-			if( $i == $ilap_options[ 'fetch_interval' ] ) echo 'selected="yes"';
-
-			echo '>' . $i . '</option>';
+			echo '<option value="' . esc_attr( $i ) . '" ' . selected( $ilap_options['fetch_interval'], $i, false ) . '">' . esc_attr( $i ) . '</option>';
 		}
 
 		echo '</select>';
@@ -211,7 +221,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	public function display_max_items_text() {
 		$ilap_options = get_option( 'ilap_options' );
 		?>
-		<input type="text" id="ilap_max_fetch_items" name="ilap_options[max_fetch_items]" value="<?php echo esc_attr( $ilap_options[ 'max_fetch_items' ] ); ?>" />
+		<input type="text" id="ilap_max_fetch_items" name="ilap_options[max_fetch_items]" value="<?php if ( isset( $ilap_options['max_fetch_items'] ) ) : echo esc_attr( $ilap_options['max_fetch_items'] ); endif; ?>" />
 		<?php
 	}
 
@@ -226,20 +236,20 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 			$valid_post_type_options[] = $p;
 		}
 
-		if( ! in_array( $input[ 'post_status' ], $valid_post_status_options ) )
-			$input[ 'post_status' ] = 'draft';
+		if( ! in_array( $input['post_status'], $valid_post_status_options ) )
+			$input['post_status'] = 'draft';
 
-		if( ! in_array( $input[ 'post_type' ], $valid_post_type_options ) )
-			$input[ 'post_type' ] = 'ilap_instapaper';
+		if( ! in_array( $input['post_type'], $valid_post_type_options ) )
+			$input['post_type'] = 'ilap_instapaper';
 
-		if( ! in_array( $input[ 'fetch_interval' ], $valid_fetch_interval_options ) )
-			$input[ 'fetch_interval' ] = 'hourly';
+		if( ! in_array( $input['fetch_interval'], $valid_fetch_interval_options ) )
+			$input['fetch_interval'] = 'hourly';
 
 		/*  This seems to be the only place we can reset the scheduled Cron if the frequency is changed, so here goes. */
 		wp_clear_scheduled_hook( 'ilap_hourly_action' );
-		wp_schedule_event( ( time() + 30 ) , $input[ 'fetch_interval' ], 'ilap_hourly_action' );
+		wp_schedule_event( ( time() + 30 ) , $input['fetch_interval'], 'ilap_hourly_action' );
 
-		$input[ 'max_fetch_items' ] = absint( $input[ 'max_fetch_items' ] );
+		$input['max_fetch_items'] = absint( $input['max_fetch_items'] );
 
 		return $input;
 	}
@@ -283,8 +293,8 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	}
 
 	/* We know we'll want the freshest version of the feed every time we check, so there's
-					no reason to set a cache higher than hourly. Set to 30 seconds just in case we
-					update the settings in order to trigger capture without causing any confusion. */
+	   no reason to set a cache higher than hourly. Set to 30 seconds just in case we
+	   update the settings in order to trigger capture without causing any confusion. */
 	public function modify_feed_cache() {
 		return 30;
 	}
@@ -295,7 +305,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		/*  Go get some options! */
 		$instapaper_options = get_option( 'ilap_options' );
 		/*  The feed URL we'll be grabbing. */
-		$instapaper_feed_url = $instapaper_options[ 'instapaper_rss_feed' ];
+		$instapaper_feed_url = $instapaper_options['instapaper_rss_feed'];
 		/*  The post type we'll be saving as. We designed it to be custom, but why not allow anything. */
 		$post_type = $instapaper_options[ 'post_type' ];
 		/*  The post status we'll use. */
