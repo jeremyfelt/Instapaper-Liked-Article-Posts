@@ -149,8 +149,8 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		?>
 		<h3>RSS Fetch Frequency</h3>
 		<p style="margin-left:12px;max-width: 630px;"><?php _e( 'This plugin currently depends on WP Cron operating fully as expected. In most cases, you should be able to select one of the intervals below and things will work as expected. If not, please post <a href="http://wordpress.org/support/plugin/instapaper-liked-article-posts">a question on the forum</a>. By default, we check for new items on an hourly basis.', 'instapaper-liked-article-posts' ); ?></p>
-		<?php
-		$seconds_till_cron = wp_next_scheduled( 'ilap_process_feed' ) - time();
+	<?php
+		$seconds_till_cron = wp_next_scheduled( 'ilap_process_feed' ) - current_time( 'timestamp', true );
 		$user_next_cron = date( 'H:i:sA', wp_next_scheduled( 'ilap_process_feed' ) + ( get_option( 'gmt_offset' ) * 3600 ) );
 		?>
 		<p style="margin-left:12px;"><?php printf( __( 'The next check is scheduled to run at %1$s, which occurs in %2$s seconds', 'instapaper-liked-article-posts' ), $user_next_cron, $seconds_till_cron ); ?></p>
@@ -246,8 +246,8 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 			$input['fetch_interval'] = 'hourly';
 
 		/*  This seems to be the only place we can reset the scheduled Cron if the frequency is changed, so here goes. */
-		wp_clear_scheduled_hook( 'ilap_hourly_action' );
-		wp_schedule_event( ( time() + 30 ) , $input['fetch_interval'], 'ilap_hourly_action' );
+		wp_clear_scheduled_hook( 'ilap_process_feed' );
+		wp_schedule_event( ( time() + 30 ) , $input['fetch_interval'], 'ilap_process_feed' );
 
 		$input['max_fetch_items'] = absint( $input['max_fetch_items'] );
 
