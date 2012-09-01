@@ -228,8 +228,9 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	}
 
 	public function display_fetch_interval_text() {
-		/* TODO: Custom intervals can be added to a WordPress install, so we should query those and offer as an option. */
-		$intervals = array( 'hourly', 'twicedaily', 'daily' );
+
+		$intervals = wp_get_schedules();
+
 		$ilap_options = get_option( 'ilap_options' );
 
 		if ( empty( $ilap_options['fetch_interval'] ) )
@@ -237,8 +238,8 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 		echo '<select id="ilap_fetch_interval" name="ilap_options[fetch_interval]">';
 
-		foreach( $intervals as $i ){
-			echo '<option value="' . esc_attr( $i ) . '" ' . selected( $ilap_options['fetch_interval'], $i, false ) . '">' . esc_attr( $i ) . '</option>';
+		foreach( $intervals as $input_value => $description ){
+			echo '<option value="' . esc_attr( $input_value ) . '" ' . selected( $ilap_options['fetch_interval'], $input_value, false ) . '">' . esc_attr( $description['display'] ) . '</option>';
 		}
 
 		echo '</select>';
@@ -255,7 +256,13 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		/*  Validation of a drop down. Hmm. Well, if it isn't on our list, we'll force it onto our list. */
 		$valid_post_status_options = array( 'draft', 'publish', 'private' );
 		$valid_post_type_options = array( 'post', 'link' );
-		$valid_fetch_interval_options = array( 'hourly', 'twicedaily', 'daily' );
+		$valid_fetch_interval_options = array();
+
+		// Build the list of valid schedules
+		$schedules = wp_get_schedules();
+		foreach ( $schedules as $k => $v ) {
+			$valid_fetch_interval_options[] = $k;
+		}
 
 		$all_post_types = get_post_types( array( '_builtin' => false ) );
 		foreach( $all_post_types as $p=>$k ){
