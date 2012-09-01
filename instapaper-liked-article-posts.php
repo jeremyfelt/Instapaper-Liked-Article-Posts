@@ -27,6 +27,10 @@ License: GPL2
 
 class Instapaper_Liked_Article_Posts_Foghlaim {
 
+	var $post_type = 'ilap_instapaper';
+
+	var $post_status = 'publish';
+
 	public function __construct() {
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
@@ -63,7 +67,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	public function modify_admin_icon() {
 		global $post_type;
 
-		if ( 'ilap_instapaper' == $post_type )
+		if ( $this->post_type == $post_type )
 			echo '<style>#icon-edit { background: url("' . plugins_url( 'images/instapaper-48.png', __FILE__ ) . '") no-repeat; background-size: 32px 32px; }</style>';
 	}
 
@@ -138,48 +142,40 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 	}
 
 	public function display_post_type_text() {
-		$ilap_options = get_option( 'ilap_options' );
-		$post_types = array( 'post', 'link' );
+		$ilap_options = get_option( 'ilap_options', array() );
+
+		if ( empty( $ilap_options ) )
+			$ilap_options[ 'post_type' ] = $this->post_type;
+
 		$all_post_types = get_post_types( array( '_builtin' => false ) );
 
-		foreach( $all_post_types as $p=>$k ){
-			$post_types[] = $p;
-		}
+		$post_types = array_merge( $all_post_types, array( 'post', 'link' ) );
 
 		echo '<select id="ilap_post_type" name="ilap_options[post_type]">';
 
 		foreach( $post_types as $pt ){
-			echo '<option value="' . $pt . '"';
-
-			if ( $pt == $ilap_options[ 'post_type' ] ) echo ' selected="yes" ';
-
-			echo '>' . $pt . '</option>';
+			echo '<option value="' . esc_attr( $pt ) . '" ' . selected( $ilap_options[ 'post_type' ], $pt, false ) . '" >';
 		}
+
+		echo '</select>';
+
 	}
 
 	public function display_post_status_text() {
-		$ilap_options = get_option( 'ilap_options' );
+		$ilap_options = get_option( 'ilap_options', array() );
 
-		/*  TODO: Definitely a better way to do this. See above function and do that. */
-		$s1 = '';
-		$s2 = '';
-		$s3 = '';
+		if ( empty( $ilap_options ) )
+			$ilap_options[ 'post_status' ] = $this->post_status;
 
-		if( 'draft' == $ilap_options[ 'post_status' ] ){
-			$s1 = 'selected="yes"';
-		}elseif( 'publish' == $ilap_options[ 'post_status' ] ){
-			$s2 = 'selected="yes"';
-		}elseif( 'private' == $ilap_options[ 'post_status' ] ){
-			$s3 = 'selected="yes"';
-		}else{
-			$s2 = 'selected="yes"';
+		$post_stati = array( 'draft', 'publish', 'private' );
+
+		echo '<select id="ilap_post_status" name="ilap_options[post_status]">';
+
+		foreach( $post_stati as $ps ) {
+			echo '<option value="' . esc_attr( $ps ) . '" ' . selected( $ilap_options[ 'post_status' ], $ps, false ) . '" >';
 		}
 
-		echo '<select id="ilap_post_status" name="ilap_options[post_status]">
-            <option value="draft" ' . $s1 . '>draft</option>
-            <option value="publish" ' . $s2 . '>publish</option>
-            <option value="private" ' . $s3 . '>private</option>
-          </select>';
+		echo '</select>';
 	}
 
 	public function display_fetch_interval_text() {
