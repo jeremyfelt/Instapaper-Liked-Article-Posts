@@ -56,6 +56,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 	function upgrade() {
 
+		global $wpdb;
 		$db_version = get_option( 'ilap_version', '0.3' );
 
 		/**
@@ -64,6 +65,11 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 		 * renaming it to ilap_process_feed. When doing this, we should make sure any old
 		 * settings are transferred over before clearing the old hook. We should definitely
 		 * clear the old hook to avoid DB pollution.
+		 *
+		 * We also used a hash based on the item's title to try and register uniqueness of
+		 * an item when storing. This upgrade script pushes some stuff around with how we
+		 * used to handle the hash. Instapaper doesn't send a GUID with the RSS feed, so it's
+		 * up to us to determine uniqueness the best we can.
 		 */
 		if ( '0.3' == $db_version ) {
 			if ( $prev_time = wp_next_scheduled( 'ilap_hourly_action' ) ) {
@@ -71,6 +77,21 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 				wp_clear_scheduled_hook( 'ilap_hourly_action' );
 				wp_schedule_event( $prev_time, $prev_interval, 'ilap_process_feed' );
 			}
+
+			$existing_post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id FROM $wpdb->postmeta
+				WHERE $wpdb->postmeta.meta_key = 'ilap_hash'" ) );
+
+			foreach ( $existing_post_ids as $post_id ) {
+				$ilap_post = get_post( $post_id );
+
+				if ( ! $ilap_post )
+					continue;
+
+				$unique_hash = md5( $ilap_post->post_title );
+				add_post_meta( $post_id, '_ilap_unique_hash', $unique_hash, true );
+				delete_post_meta( $post_id, 'ilap_hash' );
+			}
+
 			update_option( 'ilap_version', '0.4' );
 		}
 	}
