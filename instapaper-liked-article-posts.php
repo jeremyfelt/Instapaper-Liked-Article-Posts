@@ -418,6 +418,7 @@ class Instapaper_Liked_Article_Posts_Foghlaim {
 
 				$item_post_id = wp_insert_post( $insta_post );
 				add_post_meta( $item_post_id, '_ilap_unique_hash', $unique_hash, true );
+				add_post_meta( $item_post_id, 'ilap_item_url', esc_url( $item_link ), true );
 			}
 		}
 	}
